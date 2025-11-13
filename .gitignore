@@ -1,2 +1,27 @@
-node_modules
-docs
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# GAS Credentials (CLASP auto-generated)
+.clasprc.json
+
+# Docs (keep in git for now)
+docs/
