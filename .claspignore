@@ -1,3 +1,27 @@
-docs
-node_modules
+# Dependencies
+node_modules/**
+
+# Client files (React app)
+client/**
+
+# Build output
+dist/**
+
+# Documentation
+docs/**
+
+# Config files
+vite.config.ts
+tsconfig.json
+tsconfig.node.json
+package.json
+package-lock.json
 .gitignore
+.claspignore
+
+# Git
+.git/**
+
+# Markdown
+README.md
+*.md
