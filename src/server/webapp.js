@@ -9,8 +9,9 @@
  */
 function doGet(e) {
   try {
-    // dist/index.html を返す
-    const html = HtmlService.createHtmlOutputFromFile('dist/index')
+    // index.html を UTF-8 で読み込んで返す
+    const template = HtmlService.createTemplateFromFile('index');
+    const html = template.evaluate()
       .setTitle('Gmail Filter Manager')
       .setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
 

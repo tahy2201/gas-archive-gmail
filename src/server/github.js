@@ -32,7 +32,7 @@ function fetchRulesFromGitHub() {
     }
 
     const data = JSON.parse(response.getContentText());
-    const content = Utilities.newBlob(Utilities.base64Decode(data.content)).getDataAsString();
+    const content = Utilities.newBlob(Utilities.base64Decode(data.content)).getDataAsString('UTF-8');
     return JSON.parse(content);
   } catch (error) {
     console.error('Error fetching rules from GitHub:', error);
@@ -73,8 +73,10 @@ function pushRulesToGitHub(rules, commitMessage) {
       sha = data.sha;
     }
 
-    // ファイルを更新
-    const content = Utilities.base64Encode(JSON.stringify(rules, null, 2));
+    // ファイルを更新（UTF-8でエンコード）
+    const jsonString = JSON.stringify(rules, null, 2);
+    const blob = Utilities.newBlob('').setDataFromString(jsonString, 'UTF-8');
+    const content = Utilities.base64Encode(blob.getBytes());
     const payload = {
       message: commitMessage,
       content: content,
