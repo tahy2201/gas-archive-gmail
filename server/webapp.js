@@ -139,3 +139,71 @@ function getCurrentUser() {
     throw new Error(`Failed to get current user: ${error.message}`);
   }
 }
+
+/**
+ * 既存の Gmail フィルタをエクスポート
+ * @returns {Object} rules.json 形式
+ */
+function exportFilters() {
+  try {
+    return exportExistingFilters();
+  } catch (error) {
+    console.error('Error exporting filters:', error);
+    throw new Error(`Failed to export filters: ${error.message}`);
+  }
+}
+
+/**
+ * ルールを Gmail に同期
+ * @param {boolean} dryRun - ドライランモード
+ * @returns {Object} 同期結果
+ */
+function syncRules(dryRun) {
+  try {
+    return syncRulesToGmail(dryRun || false);
+  } catch (error) {
+    console.error('Error syncing rules:', error);
+    throw new Error(`Failed to sync rules: ${error.message}`);
+  }
+}
+
+/**
+ * ラベルをエクスポート
+ * @returns {Object} labels.json 形式
+ */
+function exportLabels() {
+  try {
+    return exportLabelsToConfig();
+  } catch (error) {
+    console.error('Error exporting labels:', error);
+    throw new Error(`Failed to export labels: ${error.message}`);
+  }
+}
+
+/**
+ * labels.json を GitHub から取得
+ * @returns {Object} labels.json の内容
+ */
+function getLabelsConfig() {
+  try {
+    return fetchLabelsFromGitHub();
+  } catch (error) {
+    console.error('Error getting labels config:', error);
+    throw new Error(`Failed to get labels config: ${error.message}`);
+  }
+}
+
+/**
+ * labels.json を GitHub に保存
+ * @param {Object} labelsConfig - labels.json の内容
+ * @param {string} commitMessage - コミットメッセージ
+ * @returns {Object} 保存結果
+ */
+function saveLabelsConfig(labelsConfig, commitMessage) {
+  try {
+    return pushLabelsToGitHub(labelsConfig, commitMessage);
+  } catch (error) {
+    console.error('Error saving labels config:', error);
+    throw new Error(`Failed to save labels config: ${error.message}`);
+  }
+}
