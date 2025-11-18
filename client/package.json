@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && npm run copy-to-server",
+    "copy-to-server": "cp ../dist/index.html ../server/index.html && printf '\\xEF\\xBB\\xBF' | cat - ../dist/index.html > ../server/index.html",
     "preview": "vite preview"
   },
   "devDependencies": {
