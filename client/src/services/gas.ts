@@ -13,6 +13,11 @@ declare const google: {
       getLabels: () => void;
       applyFilter: (ruleId: string) => void;
       getCurrentUser: () => void;
+      exportFilters: () => void;
+      syncRules: (dryRun: boolean) => void;
+      exportLabels: () => void;
+      getLabelsConfig: () => void;
+      saveLabelsConfig: (labelsConfig: any, commitMessage: string) => void;
     };
   };
 };
@@ -55,4 +60,30 @@ export const gasApi = {
    * 現在のユーザー情報を取得
    */
   getCurrentUser: () => runGasFunction('getCurrentUser'),
+
+  /**
+   * 既存の Gmail フィルタをエクスポート
+   */
+  exportFilters: () => runGasFunction('exportFilters'),
+
+  /**
+   * ルールを Gmail に同期
+   */
+  syncRules: (dryRun: boolean) => runGasFunction('syncRules', dryRun),
+
+  /**
+   * ラベルをエクスポート
+   */
+  exportLabels: () => runGasFunction('exportLabels'),
+
+  /**
+   * labels.json を取得
+   */
+  getLabelsConfig: () => runGasFunction('getLabelsConfig'),
+
+  /**
+   * labels.json を保存
+   */
+  saveLabelsConfig: (labelsConfig: any, commitMessage: string) =>
+    runGasFunction('saveLabelsConfig', labelsConfig, commitMessage),
 };
