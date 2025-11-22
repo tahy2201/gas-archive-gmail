@@ -207,3 +207,49 @@ function saveLabelsConfig(labelsConfig, commitMessage) {
     throw new Error(`Failed to save labels config: ${error.message}`);
   }
 }
+
+/**
+ * Git コミット履歴を取得
+ * @param {string} filePath - ファイルパス
+ * @param {number} perPage - 1ページあたりの件数
+ * @param {number} page - ページ番号
+ * @returns {Array} コミット履歴
+ */
+function getCommitHistory(filePath, perPage, page) {
+  try {
+    return fetchCommitHistory(filePath, perPage, page);
+  } catch (error) {
+    console.error('Error getting commit history:', error);
+    throw new Error(`Failed to get commit history: ${error.message}`);
+  }
+}
+
+/**
+ * 特定コミットの rules.json を取得
+ * @param {string} commitSha - コミットSHA
+ * @param {string} filePath - ファイルパス
+ * @returns {Object} ルール設定
+ */
+function getRulesAtCommit(commitSha, filePath) {
+  try {
+    return fetchRulesAtCommit(commitSha, filePath);
+  } catch (error) {
+    console.error('Error getting rules at commit:', error);
+    throw new Error(`Failed to get rules at commit: ${error.message}`);
+  }
+}
+
+/**
+ * 指定したコミットにロールバック
+ * @param {string} commitSha - コミットSHA
+ * @param {string} filePath - ファイルパス
+ * @returns {Object} 保存結果
+ */
+function rollback(commitSha, filePath) {
+  try {
+    return rollbackToCommit(commitSha, filePath);
+  } catch (error) {
+    console.error('Error rolling back:', error);
+    throw new Error(`Failed to rollback: ${error.message}`);
+  }
+}

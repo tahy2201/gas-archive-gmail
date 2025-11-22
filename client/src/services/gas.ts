@@ -18,6 +18,9 @@ declare const google: {
       exportLabels: () => void;
       getLabelsConfig: () => void;
       saveLabelsConfig: (labelsConfig: any, commitMessage: string) => void;
+      getCommitHistory: (filePath?: string, perPage?: number, page?: number) => void;
+      getRulesAtCommit: (commitSha: string, filePath?: string) => void;
+      rollback: (commitSha: string, filePath?: string) => void;
     };
   };
 };
@@ -86,4 +89,22 @@ export const gasApi = {
    */
   saveLabelsConfig: (labelsConfig: any, commitMessage: string) =>
     runGasFunction('saveLabelsConfig', labelsConfig, commitMessage),
+
+  /**
+   * Git コミット履歴を取得
+   */
+  getCommitHistory: (filePath?: string, perPage?: number, page?: number) =>
+    runGasFunction('getCommitHistory', filePath, perPage, page),
+
+  /**
+   * 特定コミットの rules.json を取得
+   */
+  getRulesAtCommit: (commitSha: string, filePath?: string) =>
+    runGasFunction('getRulesAtCommit', commitSha, filePath),
+
+  /**
+   * 指定したコミットにロールバック
+   */
+  rollback: (commitSha: string, filePath?: string) =>
+    runGasFunction('rollback', commitSha, filePath),
 };

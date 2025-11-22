@@ -52,3 +52,17 @@ export interface GmailLabel {
 export interface User {
   email: string;
 }
+
+export interface GitCommit {
+  sha: string;
+  message: string;
+  author: {
+    name: string;
+    email: string;
+    date: string;
+  };
+  committer: {
+    name: string;
+    date: string;
+  };
+}

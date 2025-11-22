@@ -5,6 +5,7 @@ import { useLabels } from './hooks/useLabels';
 import { RuleList } from './components/RuleList';
 import { RuleEditor } from './components/RuleEditor';
 import { CommitDialog } from './components/CommitDialog';
+import { GitHistory } from './components/GitHistory';
 import { gasApi } from './services/gas';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
   const [pendingRules, setPendingRules] = useState<Rule[]>([]);
   const [applyingFilter, setApplyingFilter] = useState<string | null>(null);
   const [syncing, setSyncing] = useState(false);
+  const [currentTab, setCurrentTab] = useState<'rules' | 'history'>('rules');
 
   // ルール編集開始
   const handleEdit = (rule: Rule) => {
@@ -224,58 +226,107 @@ function App() {
         </p>
       </header>
 
-      {/* 統計情報 */}
+      {/* タブナビゲーション */}
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '16px',
+          display: 'flex',
+          gap: '8px',
           marginBottom: '24px',
+          borderBottom: '2px solid #dee2e6',
         }}
       >
-        <div
+        <button
+          onClick={() => setCurrentTab('rules')}
           style={{
-            backgroundColor: '#e3f2fd',
-            padding: '16px',
-            borderRadius: '8px',
+            padding: '12px 24px',
+            border: 'none',
+            backgroundColor: 'transparent',
+            color: currentTab === 'rules' ? '#007bff' : '#6c757d',
+            fontSize: '1em',
+            cursor: 'pointer',
+            fontWeight: '500',
+            borderBottom: currentTab === 'rules' ? '3px solid #007bff' : '3px solid transparent',
+            marginBottom: '-2px',
           }}
         >
-          <div style={{ fontSize: '0.9em', color: '#1976d2', marginBottom: '4px' }}>
-            全ルール数
-          </div>
-          <div style={{ fontSize: '2em', fontWeight: 'bold', color: '#1976d2' }}>
-            {rules.length}
-          </div>
-        </div>
-        <div
+          ルール管理
+        </button>
+        <button
+          onClick={() => setCurrentTab('history')}
           style={{
-            backgroundColor: '#e8f5e9',
-            padding: '16px',
-            borderRadius: '8px',
+            padding: '12px 24px',
+            border: 'none',
+            backgroundColor: 'transparent',
+            color: currentTab === 'history' ? '#007bff' : '#6c757d',
+            fontSize: '1em',
+            cursor: 'pointer',
+            fontWeight: '500',
+            borderBottom: currentTab === 'history' ? '3px solid #007bff' : '3px solid transparent',
+            marginBottom: '-2px',
           }}
         >
-          <div style={{ fontSize: '0.9em', color: '#388e3c', marginBottom: '4px' }}>
-            有効なルール
-          </div>
-          <div style={{ fontSize: '2em', fontWeight: 'bold', color: '#388e3c' }}>
-            {rules.filter(r => r.enabled).length}
-          </div>
-        </div>
-        <div
-          style={{
-            backgroundColor: '#fff3e0',
-            padding: '16px',
-            borderRadius: '8px',
-          }}
-        >
-          <div style={{ fontSize: '0.9em', color: '#f57c00', marginBottom: '4px' }}>
-            ラベル数
-          </div>
-          <div style={{ fontSize: '2em', fontWeight: 'bold', color: '#f57c00' }}>
-            {labels.length}
-          </div>
-        </div>
+          履歴・ロールバック
+        </button>
       </div>
+
+      {/* 履歴タブ */}
+      {currentTab === 'history' && <GitHistory />}
+
+      {/* ルールタブ */}
+      {currentTab === 'rules' && (
+        <>
+          {/* 統計情報 */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+              gap: '16px',
+              marginBottom: '24px',
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: '#e3f2fd',
+                padding: '16px',
+                borderRadius: '8px',
+              }}
+            >
+              <div style={{ fontSize: '0.9em', color: '#1976d2', marginBottom: '4px' }}>
+                全ルール数
+              </div>
+              <div style={{ fontSize: '2em', fontWeight: 'bold', color: '#1976d2' }}>
+                {rules.length}
+              </div>
+            </div>
+            <div
+              style={{
+                backgroundColor: '#e8f5e9',
+                padding: '16px',
+                borderRadius: '8px',
+              }}
+            >
+              <div style={{ fontSize: '0.9em', color: '#388e3c', marginBottom: '4px' }}>
+                有効なルール
+              </div>
+              <div style={{ fontSize: '2em', fontWeight: 'bold', color: '#388e3c' }}>
+                {rules.filter(r => r.enabled).length}
+              </div>
+            </div>
+            <div
+              style={{
+                backgroundColor: '#fff3e0',
+                padding: '16px',
+                borderRadius: '8px',
+              }}
+            >
+              <div style={{ fontSize: '0.9em', color: '#f57c00', marginBottom: '4px' }}>
+                ラベル数
+              </div>
+              <div style={{ fontSize: '2em', fontWeight: 'bold', color: '#f57c00' }}>
+                {labels.length}
+              </div>
+            </div>
+          </div>
 
       {/* 新規作成ボタン */}
       {!isCreating && !editingRule && (
@@ -419,18 +470,20 @@ function App() {
         </div>
       )}
 
-      {/* ルール一覧 */}
-      {!isCreating && !editingRule && (
-        <div>
-          <h2 style={{ margin: '0 0 16px 0' }}>ルール一覧</h2>
-          <RuleList
-            rules={rules}
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-            onToggle={handleToggle}
-            onApplyFilter={handleApplyFilter}
-          />
-        </div>
+          {/* ルール一覧 */}
+          {!isCreating && !editingRule && (
+            <div>
+              <h2 style={{ margin: '0 0 16px 0' }}>ルール一覧</h2>
+              <RuleList
+                rules={rules}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+                onToggle={handleToggle}
+                onApplyFilter={handleApplyFilter}
+              />
+            </div>
+          )}
+        </>
       )}
 
       {/* コミットダイアログ */}
