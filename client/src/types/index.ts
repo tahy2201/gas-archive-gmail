@@ -4,7 +4,7 @@
 
 export interface Rule {
   id: string;
-  type: 'filter' | 'archive' | 'both';
+  type: 'incoming' | 'existing' | 'always';
   enabled: boolean;
   name: string;
   description?: string;

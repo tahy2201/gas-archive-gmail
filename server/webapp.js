@@ -97,27 +97,35 @@ function applyFilter(ruleId) {
       throw new Error(`Rule is disabled: ${ruleId}`);
     }
 
-    if (rule.type === 'filter' || rule.type === 'both') {
-      // フィルタ作成
-      const filter = createGmailFilter(rule);
-      return {
-        success: true,
-        filterId: filter.id,
-        message: 'Filter created successfully'
-      };
+    let filterResult = null;
+    let archiveResult = null;
+
+    if (rule.type === 'incoming' || rule.type === 'always') {
+      filterResult = createGmailFilter(rule);
     }
 
-    if (rule.type === 'archive' || rule.type === 'both') {
-      // アーカイブルール実行
-      const count = executeArchiveRule(rule);
-      return {
-        success: true,
-        processedCount: count,
-        message: `Processed ${count} messages`
-      };
+    if (rule.type === 'existing' || rule.type === 'always') {
+      archiveResult = executeRule(rule.id, { dryRun: false });
     }
 
-    throw new Error(`Unknown rule type: ${rule.type}`);
+    const messages = [];
+    if (filterResult) {
+      messages.push('Filter created successfully');
+    }
+    if (archiveResult) {
+      messages.push(`Processed ${archiveResult.processedCount} messages (${archiveResult.status})`);
+    }
+
+    const result = {
+      success: true,
+      filterId: filterResult ? filterResult.id : null,
+      archiveResult: archiveResult,
+      processedCount: archiveResult ? archiveResult.processedCount : undefined,
+      status: archiveResult ? archiveResult.status : undefined,
+      message: messages.join(' / ') || 'No action executed'
+    };
+
+    return result;
   } catch (error) {
     console.error('Error applying filter:', error);
     throw new Error(`Failed to apply filter: ${error.message}`);
@@ -177,6 +185,35 @@ function exportLabels() {
   } catch (error) {
     console.error('Error exporting labels:', error);
     throw new Error(`Failed to export labels: ${error.message}`);
+  }
+}
+
+/**
+ * 既存メールにルールを適用
+ * @param {string} ruleId
+ * @param {Object} options
+ * @returns {Object} 実行結果
+ */
+function runArchiveRuleById(ruleId, options) {
+  try {
+    return executeRule(ruleId, options || {});
+  } catch (error) {
+    console.error('Error executing rule:', error);
+    throw new Error(`Failed to execute rule: ${error.message}`);
+  }
+}
+
+/**
+ * スケジュール対象のルールを実行
+ * @param {Object} options
+ * @returns {Array<Object>} 実行結果一覧
+ */
+function runScheduledArchiveRules(options) {
+  try {
+    return executeScheduledRules(options || {});
+  } catch (error) {
+    console.error('Error executing scheduled rules:', error);
+    throw new Error(`Failed to execute scheduled rules: ${error.message}`);
   }
 }
 
