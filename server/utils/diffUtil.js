@@ -23,8 +23,8 @@ function detectRuleDiff(githubRules, gmailFilters) {
 
   // GitHub ルールを処理
   githubRules.forEach(rule => {
-    // type が filter または both のみ Gmail フィルタとして同期
-    if (rule.type !== 'filter' && rule.type !== 'both') {
+    // type が incoming または always のみ Gmail フィルタとして同期
+    if (rule.type !== 'incoming' && rule.type !== 'always') {
       return;
     }
 

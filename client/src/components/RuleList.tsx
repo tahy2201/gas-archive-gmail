@@ -88,11 +88,11 @@ export function RuleList({
                     color: rule.enabled ? '#1976d2' : '#666',
                   }}
                 >
-                  {rule.type === 'filter'
-                    ? 'フィルタ'
-                    : rule.type === 'archive'
-                    ? 'アーカイブ'
-                    : 'フィルタ + アーカイブ'}
+                  {rule.type === 'incoming'
+                    ? '新着メール'
+                    : rule.type === 'existing'
+                    ? '既存メール'
+                    : '新着 + 既存'}
                 </span>
                 {rule.schedule && rule.schedule !== 'manual' && (
                   <span
@@ -203,7 +203,7 @@ export function RuleList({
             >
               編集
             </button>
-            {(rule.type === 'filter' || rule.type === 'both') && (
+            {(rule.type === 'incoming' || rule.type === 'always') && (
               <button
                 onClick={() => onApplyFilter(rule.id)}
                 disabled={!rule.enabled}

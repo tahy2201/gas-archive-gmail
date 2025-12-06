@@ -10,7 +10,7 @@ interface RuleEditorProps {
 }
 
 const emptyRule: Omit<Rule, 'id' | 'createdAt' | 'updatedAt'> = {
-  type: 'filter',
+  type: 'incoming',
   enabled: true,
   name: '',
   description: '',
@@ -159,9 +159,9 @@ export function RuleEditor({ rule, labels, onSave, onCancel }: RuleEditorProps) 
                 border: '1px solid #ddd',
               }}
             >
-              <option value="filter">フィルタのみ</option>
-              <option value="archive">アーカイブのみ</option>
-              <option value="both">フィルタ + アーカイブ</option>
+              <option value="incoming">新着メールのみ</option>
+              <option value="existing">既存メールのみ</option>
+              <option value="always">新着 + 既存（常時）</option>
             </select>
           </div>
 
@@ -329,7 +329,7 @@ export function RuleEditor({ rule, labels, onSave, onCancel }: RuleEditorProps) 
         </div>
 
         {/* スケジュール */}
-        {(formData.type === 'archive' || formData.type === 'both') && (
+        {(formData.type === 'existing' || formData.type === 'always') && (
           <div style={{ marginBottom: '20px' }}>
             <h3 style={{ margin: '0 0 12px 0', fontSize: '1.1em' }}>スケジュール</h3>
             <div style={{ marginBottom: '12px' }}>

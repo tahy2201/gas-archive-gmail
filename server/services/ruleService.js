@@ -16,7 +16,7 @@ function exportExistingFilters() {
       // Gmail Filter を Rule 形式に変換
       const rule = {
         id: `imported_filter_${Date.now()}_${index}`,
-        type: 'filter',
+        type: 'incoming',
         enabled: true,
         name: generateFilterName(filter.criteria),
         description: `Imported from Gmail filter ${filter.id}`,
@@ -66,7 +66,7 @@ function generateFilterName(criteria) {
 /**
  * ルールIDを生成
  * @param {string} userSpecifiedId - ユーザー指定ID（オプション）
- * @param {string} type - ルールタイプ（filter, archive, both）
+ * @param {string} type - ルールタイプ（incoming, existing, always）
  * @param {Array} existingRules - 既存ルール（重複チェック用）
  * @returns {string} ルールID
  */
@@ -87,7 +87,7 @@ function generateRuleId(userSpecifiedId, type, existingRules) {
   }
 
   // 自動生成: {prefix}_{timestamp}_{hash}
-  const prefix = type === 'archive' ? 'archive' : type === 'both' ? 'both' : 'filter';
+  const prefix = type === 'existing' ? 'existing' : type === 'always' ? 'always' : 'incoming';
   const timestamp = Math.floor(Date.now() / 1000);
   const hash = Math.random().toString(36).substring(2, 5);
 
@@ -105,17 +105,17 @@ function validateRule(rule) {
   // 必須フィールドチェック
   if (!rule.id) errors.push('id is required');
   if (!rule.type) errors.push('type is required');
-  if (!['filter', 'archive', 'both'].includes(rule.type)) {
-    errors.push('type must be "filter", "archive", or "both"');
+  if (!['incoming', 'existing', 'always'].includes(rule.type)) {
+    errors.push('type must be "incoming", "existing", or "always"');
   }
   if (rule.enabled === undefined) errors.push('enabled is required');
   if (!rule.name) errors.push('name is required');
   if (!rule.criteria) errors.push('criteria is required');
   if (!rule.actions) errors.push('actions is required');
 
-  // type=both の場合は archiveQuery が必要
-  if (rule.type === 'both' && !rule.archiveQuery) {
-    errors.push('archiveQuery is required for type "both"');
+  // type=always の場合は existingQuery が必要
+  if (rule.type === 'always' && !rule.existingQuery) {
+    errors.push('existingQuery is required for type "always"');
   }
 
   return {
@@ -142,8 +142,8 @@ function normalizeRule(rule) {
     actions: rule.actions || {},
     applyToExisting: rule.applyToExisting || false,
     schedule: rule.schedule || null,
-    archiveQuery: rule.archiveQuery || null,
-    archiveActions: rule.archiveActions || null,
+    existingQuery: rule.existingQuery || null,
+    existingActions: rule.existingActions || null,
     createdAt: rule.createdAt || now,
     updatedAt: now
   };
